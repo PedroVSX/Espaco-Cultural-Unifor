@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "204949695527",
+    "project_id": "espacoculturalunifor-b3ad9",
+    "storage_bucket": "espacoculturalunifor-b3ad9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204949695527:android:6da33264a5aba4e8b57202",
+        "android_client_info": {
+          "package_name": "com.example.espacocultural"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBL7RSLp7WMRFhgrz7zLtSINhYvS1WZLcc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204949695527:android:982b1c0bd6fdb84fb57202",
+        "android_client_info": {
+          "package_name": "com.example.projetoespacoculturalunifor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBL7RSLp7WMRFhgrz7zLtSINhYvS1WZLcc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
