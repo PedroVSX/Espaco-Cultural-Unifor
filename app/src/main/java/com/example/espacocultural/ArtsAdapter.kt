@@ -9,6 +9,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.espacocultural.models.Arts
+import com.example.espacocultural.models.GlobalVariables
 import com.google.android.material.imageview.ShapeableImageView
 
 class ArtsAdapter(private val artsList: List<Arts>) :
@@ -33,6 +34,7 @@ class ArtsAdapter(private val artsList: List<Arts>) :
             val intent = Intent(holder.itemView.context, ArtInfoPage::class.java)
             intent.putExtra("artId", currentArt.id)
             holder.itemView.context.startActivity(intent)
+            GlobalVariables.lastPage = ArtsPage::class.java
 
             // Definir nenhuma animação de transição
             (holder.itemView.context as Activity).overridePendingTransition(0, 0)

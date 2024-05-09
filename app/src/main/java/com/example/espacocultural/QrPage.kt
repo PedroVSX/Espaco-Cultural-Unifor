@@ -84,9 +84,10 @@ class QrPage : AppCompatActivity() {
         override fun barcodeResult(result: BarcodeResult?) {
             result?.let {
                 // Processa o resultado do escaneamento do QR code aqui
-                val intent = Intent(this@QrPage, ArtInfoPage::class.java)
-                intent.putExtra("qrCodeContent", it.text)
-                startActivity(intent)
+                //val intent = Intent(this@QrPage, ArtInfoPage::class.java)
+                //intent.putExtra("qrCodeContent", it.text)
+                //startActivity(intent)
+                changeScreen(this@QrPage, ArtInfoPage::class.java)
             }
         }
 

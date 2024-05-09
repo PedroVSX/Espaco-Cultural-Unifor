@@ -9,6 +9,7 @@ import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -17,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.espacocultural.models.GlobalVariables
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.auth.FirebaseAuthCredentialsProvider
@@ -31,11 +33,22 @@ class ArtInfoPage : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.art_info_page)
 
-        // Botão Voltar
-        val returnButton = findViewById<Button>(R.id.returnButton)
+        // Botões superiores
+        val returnButton = findViewById<Button>(R.id.return_button)
+        val optionsButton = findViewById<ConstraintLayout>(R.id.options_button)
 
         returnButton.setOnClickListener {
             changeScreen(this, GlobalVariables.lastPage)
+        }
+
+        if (GlobalVariables.isAdmin) {
+            optionsButton.visibility = View.VISIBLE
+        } else {
+            optionsButton.visibility = View.GONE
+        }
+
+        optionsButton.setOnClickListener {
+            // Editar, remover
         }
 
         // Carregamento das obras
@@ -45,12 +58,13 @@ class ArtInfoPage : AppCompatActivity() {
         val mainContainer = findViewById<RelativeLayout>(R.id.mainContainer)
         mainContainer.visibility = View.GONE
 
-        // Textos da Obra
-        val artName = findViewById<TextView>(R.id.artName)
-        val artYear = findViewById<TextView>(R.id.artYear)
-        val artAuthor = findViewById<TextView>(R.id.artAuthor)
-        val artDescription = findViewById<TextView>(R.id.artDescription)
-        val artImage = findViewById<ImageView>(R.id.artImage)
+        // Informações da Obra
+        val artName = findViewById<TextView>(R.id.art_name)
+        val artYear = findViewById<TextView>(R.id.art_year)
+        val artAuthor = findViewById<TextView>(R.id.art_author)
+        val artDescription = findViewById<TextView>(R.id.art_description)
+        val artImage = findViewById<ImageView>(R.id.art_image)
+        val expandedArtImage = findViewById<ImageView>(R.id.expanded_art_image) // Inicializa antes para expansão
 
         // Banco de dados
         val db = FirebaseFirestore.getInstance()
@@ -70,7 +84,8 @@ class ArtInfoPage : AppCompatActivity() {
                 artYear.text = " - " + year
                 artAuthor.text = author
                 artDescription.text = description
-                displayBitmapInImageView(imageBitmap, artImage)
+                displayBitmapInImageView(imageBitmap, artImage) // Coloca a imagem em miniatura na obra
+                displayBitmapInImageView(imageBitmap, expandedArtImage) // Coloca a imagem expandida
 
                 progressBar.visibility = View.GONE
                 mainContainer.visibility = View.VISIBLE
@@ -81,9 +96,33 @@ class ArtInfoPage : AppCompatActivity() {
                 progressBar.visibility = View.VISIBLE
                 mainContainer.visibility = View.GONE
             }
+
+        // Tela expandida
+        val expandedArt: FrameLayout = findViewById(R.id.expanded_art) // Tela da expansão
+        val leaveExpansion: RelativeLayout = findViewById(R.id.leave_expansion) // Botão para sair de expansão
+        val expandButton: ImageButton = findViewById(R.id.expand_button)
+
+        expandButton.setOnClickListener {
+            // Expande a imagem
+            if (progressBar.visibility == View.GONE) {
+                expandedArt.visibility = View.VISIBLE
+            }
+        }
+
+        artImage.setOnClickListener {
+            // Expande a imagem
+            if (progressBar.visibility == View.GONE) {
+                expandedArt.visibility = View.VISIBLE
+            }
+        }
+
+        leaveExpansion.setOnClickListener {
+            expandedArt.visibility = View.GONE
+        }
     }
 
     fun changeScreen(activity: Activity, clasS: Class<*>?) {
+        GlobalVariables.lastPage = activity::class.java
         val intent = Intent(activity, clasS)
         startActivity(intent)
         activity.finish()

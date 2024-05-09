@@ -190,8 +190,10 @@
             android:layout_height="10dp" />
 
         <LinearLayout
+            android:id="@+id/view_all_artists"
             android:layout_width="match_parent"
             android:layout_height="70dp"
+            android:clickable="true"
             android:layout_gravity="center"
             android:background="@color/azul_unifor">
 

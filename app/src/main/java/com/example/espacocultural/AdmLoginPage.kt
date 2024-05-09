@@ -67,10 +67,11 @@ class AdmLoginPage : AppCompatActivity() {
     }
 
     fun changeScreen(activity: Activity, clasS: Class<*>?) {
+        GlobalVariables.lastPage = activity::class.java
         val intent = Intent(activity, clasS)
         startActivity(intent)
         activity.finish()
-        activity.overridePendingTransition(0, 0); // Definindo nenhuma animação
+        activity.overridePendingTransition(0, 0)
     }
 
     fun togglePasswordView(view: EditText) {

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.espacocultural.models.GlobalVariables
 import com.example.espacocultural.models.Salons
 import com.google.android.material.imageview.ShapeableImageView
 
@@ -33,6 +34,7 @@ class SalonsAdapter(private val salonsList: List<Salons>) :
             val intent = Intent(holder.itemView.context, ArtsPage::class.java)
             intent.putExtra("salonId", currentSalon.id)
             holder.itemView.context.startActivity(intent)
+            GlobalVariables.lastPage = SalonsPage::class.java
 
             // Definir nenhuma animação de transição
             (holder.itemView.context as Activity).overridePendingTransition(0, 0)
