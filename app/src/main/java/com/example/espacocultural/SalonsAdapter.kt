@@ -2,11 +2,14 @@ package com.example.espacocultural
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.espacocultural.models.GlobalVariables
 import com.example.espacocultural.models.Salons
@@ -23,22 +26,7 @@ class SalonsAdapter(private val salonsList: List<Salons>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentSalon = salonsList[position]
-        holder.nameTextView.text = currentSalon.name
-
-        // Configurando a imagem no ShapeableImageView
-        holder.imageView.setImageResource(currentSalon.image)
-
-        // Definir um listener de clique para o botão
-        holder.salonNumberButton.setOnClickListener {
-            // Abrir a tela de ArtsPage, passando o identificador único do salão como parâmetro extra
-            val intent = Intent(holder.itemView.context, ArtsPage::class.java)
-            intent.putExtra("salonId", currentSalon.id)
-            holder.itemView.context.startActivity(intent)
-            GlobalVariables.lastPage = SalonsPage::class.java
-
-            // Definir nenhuma animação de transição
-            (holder.itemView.context as Activity).overridePendingTransition(0, 0)
-        }
+        holder.bind(currentSalon)
     }
 
     override fun getItemCount(): Int {
@@ -49,5 +37,33 @@ class SalonsAdapter(private val salonsList: List<Salons>) :
         val nameTextView: TextView = itemView.findViewById(R.id.name)
         val imageView: ShapeableImageView = itemView.findViewById(R.id.image)
         val salonNumberButton: RelativeLayout = itemView.findViewById(R.id.salon_number_button)
+        val checkedImage: ImageView = itemView.findViewById(R.id.selected_salon) // Adiciona as ImageViews com as opções
+        val editImage: ImageView = itemView.findViewById(R.id.edit_salon) // Adiciona as ImageViews com as opções
+
+        fun bind(salons: Salons) {
+            nameTextView.text = salons.name
+            imageView.setImageDrawable(salons.image)
+
+            // Definindo a visibilidade das ImageViews com base na variável showOptions
+            if (salons.showOptions) {
+                checkedImage.visibility = View.VISIBLE
+                editImage.visibility = View.VISIBLE
+            } else {
+                checkedImage.visibility = View.GONE
+                editImage.visibility = View.GONE
+            }
+
+            // Definir um listener de clique para o botão
+            salonNumberButton.setOnClickListener {
+                // Abrir a tela de ArtsPage, passando o identificador único do salão como parâmetro extra
+                val intent = Intent(itemView.context, ArtsPage::class.java)
+                intent.putExtra("salonId", salons.id)
+                itemView.context.startActivity(intent)
+                GlobalVariables.lastPage = SalonsPage::class.java
+
+                // Definir nenhuma animação de transição
+                (itemView.context as Activity).overridePendingTransition(0, 0)
+            }
+        }
     }
 }

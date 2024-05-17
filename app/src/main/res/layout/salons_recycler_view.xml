@@ -45,4 +45,22 @@
         </RelativeLayout>
 
     </GridLayout>
+
+    <ImageView
+        android:id="@+id/selected_salon"
+        android:visibility="gone"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:clickable="true"
+        android:src="@drawable/not_checked"/>
+
+    <ImageView
+        android:id="@+id/edit_salon"
+        android:visibility="gone"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toEndOf="@id/selected_salon"
+        android:clickable="true"
+        android:src="@drawable/edit"/>
+
 </RelativeLayout>
