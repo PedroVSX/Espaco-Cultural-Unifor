@@ -309,6 +309,7 @@
                     android:layout_height="20dp" />
 
                 <TextView
+                    android:id="@+id/error_prevention_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
@@ -340,6 +341,74 @@
 
                     <Button
                         android:id="@+id/confirm_button"
+                        android:layout_width="160dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:background="@color/transparent"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/folito_bold"
+                        android:text="Sim" />
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/delete_error_prevention"
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/bg_dimming" >
+
+        <RelativeLayout
+            android:id="@+id/delete_error_prevention_card"
+            android:layout_width="320dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_corners_white" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/folito_regular"
+                    android:textSize="20sp"
+                    android:text="Você tem certeza que deseja deletar o Salão 1?" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_bottom_corners">
+
+                    <Button
+                        android:id="@+id/cancel_delete_button"
+                        android:layout_width="160dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:background="@drawable/rounded_red_bottom_corners"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/folito_bold"
+                        android:textColor="@color/red"
+                        android:text="Não" />
+
+                    <Button
+                        android:id="@+id/confirm_delete_button"
                         android:layout_width="160dp"
                         android:layout_height="match_parent"
                         android:gravity="center"
