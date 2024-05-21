@@ -28,10 +28,24 @@ import com.google.firebase.ktx.Firebase
 
 class ArtInfoPage : AppCompatActivity() {
 
+    private lateinit var artId: String
+    private var salonId: Int? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.art_info_page)
+
+        // De qual obra eu vim?
+        // Recuperar os valores passados pela Intent
+        if (intent.hasExtra("artId") && intent.hasExtra("salonId")) {
+            artId = intent.getStringExtra("artId") ?: ""
+            salonId = intent.getIntExtra("salonId", -1)
+            Log.d("ArtInfoPage", "artId recebido: $artId")
+            Log.d("ArtInfoPage", "salonId recebido: $salonId")
+        } else {
+            Log.e("ArtInfoPage", "Os extras 'artId' ou 'salonId' não foram passados na Intent")
+        }
 
         // Botões superiores
         val returnButton = findViewById<Button>(R.id.return_button)
@@ -68,7 +82,7 @@ class ArtInfoPage : AppCompatActivity() {
 
         // Banco de dados
         val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("obras").document("Mona Lisa")
+        val docRef = db.collection("saloes").document("salao $salonId").collection("obras").document(artId)
 
         docRef.get().addOnSuccessListener {
             if (it != null) {
@@ -124,6 +138,7 @@ class ArtInfoPage : AppCompatActivity() {
     fun changeScreen(activity: Activity, clasS: Class<*>?) {
         GlobalVariables.lastPage = activity::class.java
         val intent = Intent(activity, clasS)
+        intent.putExtra("salonId", salonId)
         startActivity(intent)
         activity.finish()
         activity.overridePendingTransition(0, 0)

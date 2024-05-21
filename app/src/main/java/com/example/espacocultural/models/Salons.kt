@@ -7,5 +7,5 @@ data class Salons(
     var id: Int = 0,
     var name: String = "",
     var image: Drawable? = null,
-    var showOptions: Boolean = false,
+    var showOptions: Boolean = false
 )

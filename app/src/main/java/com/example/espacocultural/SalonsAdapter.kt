@@ -49,7 +49,7 @@ class SalonsAdapter(
         val nameTextView: TextView = itemView.findViewById(R.id.name)
         val imageView: ShapeableImageView = itemView.findViewById(R.id.image)
         val salonNumberButton: RelativeLayout = itemView.findViewById(R.id.salon_number_button)
-        val deleteIcon: ImageView = itemView.findViewById(R.id.selected_salon) // Adiciona as ImageViews com as opções
+        val deleteIcon: ImageView = itemView.findViewById(R.id.delete_salon) // Adiciona as ImageViews com as opções
         val editIcon: ImageView = itemView.findViewById(R.id.edit_salon) // Adiciona as ImageViews com as opções
 
         fun bind(salons: Salons, position: Int) {

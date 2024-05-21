@@ -29,6 +29,7 @@ import com.example.espacocultural.models.Arts
 import com.example.espacocultural.models.GlobalVariables
 import com.example.espacocultural.models.Salons
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ListenerRegistration
@@ -114,29 +115,24 @@ class SalonsPage : AppCompatActivity(), SalonsAdapter.OnItemClickListener {
                             Toast.makeText(this, "Salão criado com sucesso!", Toast.LENGTH_SHORT).show()
                         }
 
-                    salonsList.add(
-                        Salons(
-                            salonNumber.text.toString().toInt(),
-                            "Salão " + salonNumber.text.toString(),
-                            addImage.drawable,
-                            false
-                        )
-                    )
-
-                    recyclerView.adapter?.notifyItemInserted(salonsList.size - 1)
-
-                    val ignore = mapOf(
-                        "ignore" to "ignore"
+                    val art = mapOf(
+                        "Ano" to "0000",
+                        "Autor" to "ignore",
+                        "Descrição" to "ignore",
+                        "Nome da obra" to "ignore",
+                        "imagem" to imageViewToBase64(addImage)
                     )
 
                     val docRef = db.collection("saloes").document("salao " + salonNumber.text.toString())
+
                     docRef.collection("obras").document("ignore")
-                        .set(ignore)
+                        .set(art)
 
                     outsideCard.visibility = View.GONE
                     salonNumber.text.clear()
-
                     addImage.setImageDrawable(null)
+
+                    loadSalonsFromFirestore()
                 } else {
                     Toast.makeText(this, "O salão está sem imagem ou nome!", Toast.LENGTH_SHORT).show()
                 }
@@ -384,8 +380,12 @@ class SalonsPage : AppCompatActivity(), SalonsAdapter.OnItemClickListener {
 
         outsideCard.visibility = View.VISIBLE
 
-        addImage = findViewById(R.id.add_image)
         val salonNumber: EditText = findViewById(R.id.salon_creation_number)
+        getFieldFromDatabase(salonNumber, "Numero", docRef)
+
+        addImage = findViewById(R.id.add_image)
+        showImageFromDatabase(addImage, docRef)
+
         val editSalon: Button = findViewById(R.id.create_salon)
         editSalon.text = "Editar Salão"
 
@@ -442,6 +442,27 @@ class SalonsPage : AppCompatActivity(), SalonsAdapter.OnItemClickListener {
 
             val salonNumber: EditText = findViewById(R.id.salon_creation_number)
             salonNumber.text.clear()
+        }
+    }
+
+    private fun getFieldFromDatabase(input: EditText, field: String, dbRef: DocumentReference) {
+        dbRef.get().addOnSuccessListener {
+            if (it != null) {
+                input.setText(it.getString(field))
+            } else {
+                Log.d("Database", "No such document")
+            }
+        }
+    }
+
+    private fun showImageFromDatabase(image: ImageView, dbRef: DocumentReference) {
+        dbRef.get().addOnSuccessListener {
+            if (it != null) {
+                val imageInString = it.getString("imagem")
+                image.setImageDrawable(imageInString?.let { it1 -> decodeBase64ToDrawable(it1) })
+            } else {
+                Log.d("Database", "No such document")
+            }
         }
     }
 }
