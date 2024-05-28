@@ -72,7 +72,7 @@
         android:textColor="@color/black"
         android:fontFamily="@font/folito_medium"
         android:textSize="24sp"
-        android:text="Obras" />
+        android:text="@string/arts" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -142,7 +142,7 @@
                     android:layout_gravity="center"
                     android:gravity="center_vertical"
                     android:background="@drawable/rounded_corners"
-                    android:hint="Nome da obra"
+                    android:hint="@string/arts_name"
                     android:textSize="16sp"
                     android:fontFamily="@font/folito_light"
                     android:padding="10dp" />
@@ -158,7 +158,7 @@
                     android:layout_gravity="center"
                     android:gravity="center_vertical"
                     android:background="@drawable/rounded_corners"
-                    android:hint="Ano"
+                    android:hint="@string/arts_year"
                     android:textSize="16sp"
                     android:fontFamily="@font/folito_light"
                     android:padding="10dp" />
@@ -174,7 +174,7 @@
                     android:layout_gravity="center"
                     android:gravity="center_vertical"
                     android:background="@drawable/rounded_corners"
-                    android:hint="Autor"
+                    android:hint="@string/arts_author"
                     android:textSize="16sp"
                     android:fontFamily="@font/folito_light"
                     android:padding="10dp" />
@@ -190,7 +190,7 @@
                     android:layout_gravity="center"
                     android:gravity="center_vertical"
                     android:background="@drawable/rounded_corners"
-                    android:hint="Descrição"
+                    android:hint="@string/arts_description"
                     android:textSize="16sp"
                     android:fontFamily="@font/folito_light"
                     android:padding="10dp" />
@@ -209,7 +209,7 @@
                     android:textSize="16sp"
                     android:fontFamily="@font/folito_bold"
                     android:textColor="@color/branco_unifor"
-                    android:text="Criar Obra" />
+                    android:text="@string/create_art" />
             </LinearLayout>
 
             <RelativeLayout
@@ -261,7 +261,7 @@
                     android:layout_gravity="center"
                     android:fontFamily="@font/folito_regular"
                     android:textSize="20sp"
-                    android:text="Você tem certeza que deseja sair da criação da obra?" />
+                    android:text="@string/artist_leave_error_prevention" />
 
                 <Space
                     android:layout_width="wrap_content"
@@ -281,7 +281,7 @@
                         android:textSize="20sp"
                         android:fontFamily="@font/folito_bold"
                         android:textColor="@color/red"
-                        android:text="Não" />
+                        android:text="@string/no" />
 
                     <Button
                         android:id="@+id/confirm_button"
@@ -291,7 +291,7 @@
                         android:background="@color/transparent"
                         android:textSize="20sp"
                         android:fontFamily="@font/folito_bold"
-                        android:text="Sim" />
+                        android:text="@string/yes" />
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
@@ -329,7 +329,7 @@
                     android:layout_gravity="center"
                     android:fontFamily="@font/folito_regular"
                     android:textSize="20sp"
-                    android:text="Você tem certeza que deseja deletar o Salão 1?" />
+                    android:text="@string/art_delete_error_prevention" />
 
                 <Space
                     android:layout_width="wrap_content"
@@ -349,7 +349,7 @@
                         android:textSize="20sp"
                         android:fontFamily="@font/folito_bold"
                         android:textColor="@color/red"
-                        android:text="Não" />
+                        android:text="@string/no" />
 
                     <Button
                         android:id="@+id/confirm_delete_button"
@@ -359,7 +359,7 @@
                         android:background="@color/transparent"
                         android:textSize="20sp"
                         android:fontFamily="@font/folito_bold"
-                        android:text="Sim" />
+                        android:text="@string/yes" />
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>

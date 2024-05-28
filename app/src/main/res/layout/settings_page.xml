@@ -144,22 +144,24 @@
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginTop="70dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/black"
+        android:fontFamily="@font/folito_medium"
+        android:textSize="24sp"
+        android:text="@string/settings" />
+
     <LinearLayout
         android:id="@+id/config_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="120dp"
         android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:fontFamily="@font/folito_medium"
-            android:gravity="center"
-            android:text="Configurações"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
 
         <!-- Idiomas -->
         <LinearLayout
@@ -179,7 +181,7 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/folito_medium"
                 android:gravity="center"
-                android:text="Idiomas"
+                android:text="@string/languages"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -191,44 +193,6 @@
                 android:id="@+id/languagesSpinner"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="5dp" />
-
-        <!-- Notificações -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="@color/settings_rectangle_bg"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            tools:ignore="UseSwitchCompatOrMaterialXml">
-
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="match_parent" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:fontFamily="@font/folito_medium"
-                android:gravity="center"
-                android:text="Notificações"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <Space
-                android:layout_width="210dp"
-                android:layout_height="match_parent" />
-
-            <Switch
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center" />
         </LinearLayout>
 
         <Space
@@ -253,7 +217,7 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/folito_medium"
                 android:gravity="center"
-                android:text="Suporte/Contato"
+                android:text="@string/contact_support"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -286,7 +250,7 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/folito_regular"
                 android:gravity="center"
-                android:text="E-mail: example@unifor.br"
+                android:text="@string/email"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -296,7 +260,7 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/folito_regular"
                 android:gravity="center"
-                android:text="Telefone: (85) 98765-4321"
+                android:text="@string/phone"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -323,7 +287,7 @@
             android:gravity="center"
             android:background="@drawable/button_rounded"
             android:fontFamily="@font/folito_bold"
-            android:text="Entrar como Adminstrador"
+            android:text="@string/enter_as_adm"
             android:textColor="@color/branco_unifor"
             android:textSize="16sp" />
     </LinearLayout>

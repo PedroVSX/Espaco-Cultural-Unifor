@@ -59,7 +59,7 @@
             android:textColor="@color/black"
             android:fontFamily="@font/folito_medium"
             android:textSize="24sp"
-            android:text="Entrar como Administrador" />
+            android:text="@string/enter_as_adm" />
 
         <Space
             android:layout_width="match_parent"
@@ -69,7 +69,7 @@
             android:id="@+id/login"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:hint="Login"
+            android:hint="@string/login"
             android:gravity="center_vertical"
             android:textSize="16sp"
             android:fontFamily="@font/folito_light"
@@ -84,7 +84,7 @@
             android:id="@+id/password"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:hint="Senha"
+            android:hint="@string/password"
             android:gravity="center_vertical"
             android:inputType="textPassword"
             android:textSize="16sp"
@@ -97,7 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="Mostrar Senha"
+            android:text="@string/show_password"
             android:textColor="@color/gray"
             android:clickable="true"
             android:onClick="onTextViewClicked" />
@@ -114,7 +114,7 @@
             android:background="@drawable/button_rounded"
             android:fontFamily="@font/folito_bold"
             android:textSize="16sp"
-            android:text="Acessar"
+            android:text="@string/access"
             android:textColor="@color/branco_unifor" />
 
     </LinearLayout>

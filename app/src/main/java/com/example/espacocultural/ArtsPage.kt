@@ -71,7 +71,7 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
         val optionsButton: ConstraintLayout = findViewById(R.id.options_button) // Botão de Editar e Remover
         val addArt: RelativeLayout = findViewById(R.id.add) // Botão para adicionar obra
 
-        // Card de criar salão
+        // Card de criar obra
         val outsideCard: FrameLayout = findViewById(R.id.art_creation_background) // Layout do card
         val leaveButton: RelativeLayout = findViewById(R.id.leave_card) // Botão de sair do card
         val errorPrevention: FrameLayout = findViewById(R.id.error_prevention_background) // Card de prevenção de erros
@@ -100,6 +100,7 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
             configEditTextToOnlyInteger(artYear)
 
             val createArt: Button = findViewById(R.id.create_art)
+            createArt.setText(R.string.create_art)
 
             // Abre a galeria do celular e seleciona imagem
             addImage.setOnClickListener {
@@ -156,7 +157,7 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
         leaveButton.setOnClickListener {
             // Prevenção de erros
             val errorPreventionText: TextView = findViewById(R.id.error_prevention_text)
-            errorPreventionText.text = "Você tem certeza que deseja sair da criação de obra?"
+            errorPreventionText.setText(R.string.art_leave_error_prevention)
             errorPrevention.visibility = View.VISIBLE
         }
 
@@ -325,6 +326,8 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
 
         val deleteCard: FrameLayout = findViewById(R.id.delete_error_prevention)
         deleteCard.visibility = View.VISIBLE
+        val deleteText: TextView = findViewById(R.id.delete_text)
+        deleteText.text = getString(R.string.art_delete_error_prevention) + selectedArt.name + "?"
 
         val cancelDeletion: Button = findViewById(R.id.cancel_delete_button)
         val confirmDeletion: Button = findViewById(R.id.confirm_delete_button)
@@ -363,7 +366,7 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
         val docRef = db.collection("saloes").document("salao ${salonId}")
             .collection("obras").document(selectedArt.name)
 
-        val outsideCard: FrameLayout = findViewById(R.id.salon_creation_background) // Layout do card
+        val outsideCard: FrameLayout = findViewById(R.id.art_creation_background) // Layout do card
         val leaveButton: RelativeLayout = findViewById(R.id.leave_card) // Botão de sair do card
         val errorPrevention: FrameLayout = findViewById(R.id.error_prevention_background) // Card de prevenção de erros
 
@@ -383,7 +386,7 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
         showImageFromDatabase(addImage, docRef)
 
         val editArt: Button = findViewById(R.id.create_art)
-        editArt.text = "Editar Obra"
+        editArt.setText(R.string.edit_art)
 
         configEditTextToOnlyInteger(artYear)
 
@@ -426,7 +429,7 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
         leaveButton.setOnClickListener {
             // Prevenção de erros
             val errorPreventionText: TextView = findViewById(R.id.error_prevention_text)
-            errorPreventionText.text = "Você tem certeza que deseja sair da edição da obra?"
+            errorPreventionText.setText(R.string.art_edit_error_prevention)
             errorPrevention.visibility = View.VISIBLE
         }
 

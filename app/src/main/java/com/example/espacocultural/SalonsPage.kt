@@ -93,6 +93,7 @@ class SalonsPage : AppCompatActivity(), SalonsAdapter.OnItemClickListener {
             addImage = findViewById(R.id.add_image)
             val salonNumber: EditText = findViewById(R.id.salon_creation_number)
             val createSalon: Button = findViewById(R.id.create_salon)
+            createSalon.setText(R.string.create_salon)
 
             configEditTextToOnlyInteger(salonNumber)
 
@@ -338,6 +339,8 @@ class SalonsPage : AppCompatActivity(), SalonsAdapter.OnItemClickListener {
 
         val deleteCard: FrameLayout = findViewById(R.id.delete_error_prevention)
         deleteCard.visibility = View.VISIBLE
+        val deleteText: TextView = findViewById(R.id.delete_text)
+        deleteText.text = getString(R.string.salon_delete_error_prevention) + selectedSalon.id + "?"
 
         val cancelDeletion: Button = findViewById(R.id.cancel_delete_button)
         val confirmDeletion: Button = findViewById(R.id.confirm_delete_button)
@@ -387,7 +390,7 @@ class SalonsPage : AppCompatActivity(), SalonsAdapter.OnItemClickListener {
         showImageFromDatabase(addImage, docRef)
 
         val editSalon: Button = findViewById(R.id.create_salon)
-        editSalon.text = "Editar Salão"
+        editSalon.setText(R.string.edit_salon)
 
         configEditTextToOnlyInteger(salonNumber)
 

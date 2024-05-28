@@ -154,7 +154,7 @@
         android:textColor="@color/black"
         android:fontFamily="@font/folito_medium"
         android:textSize="24sp"
-        android:text="Leitor QR" />
+        android:text="@string/qr_reader" />
 
     <LinearLayout
         android:layout_width="wrap_content"

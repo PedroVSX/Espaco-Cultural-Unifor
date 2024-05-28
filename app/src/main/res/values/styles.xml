@@ -10,4 +10,9 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item> <!-- Ajuste o tamanho das bordas arredondadas conforme necessário -->
     </style>
+
+    <style name="ImageCircle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item> <!-- Ajuste o tamanho das bordas arredondadas conforme necessário -->
+    </style>
 </resources>

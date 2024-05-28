@@ -47,7 +47,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/selected_tab" />
-                
+
                 <LinearLayout
                     android:layout_width="30dp"
                     android:layout_height="wrap_content"
@@ -183,7 +183,7 @@
             android:fontFamily="@font/folito_bold"
             android:gravity="center"
             android:textSize="16sp"
-            android:text="Exposições Antigas" />
+            android:text="@string/old_expositions" />
 
         <Space
             android:layout_width="match_parent"
@@ -204,111 +204,10 @@
                 android:textColor="@color/branco_unifor"
                 android:textSize="20sp"
                 android:fontFamily="@font/folito_bold"
-                android:text="Artistas"/>
+                android:text="@string/artists"/>
         </LinearLayout>
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="10dp" />
-
-        <RelativeLayout
-            android:layout_width="380dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center" >
-
-            <Button
-                android:id="@+id/artistButton1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/transparent" />
-
-            <LinearLayout
-                android:layout_width="380dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"
-                android:background="@drawable/elipse">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:background="@drawable/circle_shape" />
-
-                <Space
-                    android:layout_width="10dp"
-                    android:layout_height="wrap_content" />
-
-                <LinearLayout
-                    android:layout_width="260dp"
-                    android:layout_height="80dp"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:fontFamily="@font/folito_bold"
-                        android:textSize="16sp"
-                        android:text="Nome do Autor"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:fontFamily="@font/folito_regular"
-                        android:textSize="16sp"
-                        android:text="@string/lorem_ipsum_but_shorter"/>
-                </LinearLayout>
-            </LinearLayout>
-        </RelativeLayout>
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="10dp" />
-
-        <RelativeLayout
-            android:layout_width="380dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center" >
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/transparent" />
-
-            <LinearLayout
-                android:layout_width="380dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"
-                android:background="@drawable/elipse">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:background="@drawable/circle_shape" />
-
-                <Space
-                    android:layout_width="10dp"
-                    android:layout_height="wrap_content" />
-
-                <LinearLayout
-                    android:layout_width="260dp"
-                    android:layout_height="80dp"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:fontFamily="@font/folito_bold"
-                        android:textSize="16sp"
-                        android:text="Nome do Autor"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:fontFamily="@font/folito_regular"
-                        android:textSize="16sp"
-                        android:text="@string/lorem_ipsum_but_shorter"/>
-                </LinearLayout>
-            </LinearLayout>
-        </RelativeLayout>
+        <!-- Ver o que fazer aqui -->
 
     </LinearLayout>
 </RelativeLayout>

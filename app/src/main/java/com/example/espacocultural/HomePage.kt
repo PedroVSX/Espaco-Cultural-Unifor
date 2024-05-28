@@ -19,14 +19,9 @@ class HomePage : AppCompatActivity() {
 
         // Botões artistas
         val viewAllArtists: LinearLayout = findViewById(R.id.view_all_artists)
-        val artistButton1 = findViewById<Button>(R.id.artistButton1)
 
         viewAllArtists.setOnClickListener{
             changeScreen(this, ArtistsPage::class.java)
-        }
-
-        artistButton1.setOnClickListener {
-            changeScreen(this, ArtistInfoPage::class.java)
         }
 
         // Botões barra inferior
