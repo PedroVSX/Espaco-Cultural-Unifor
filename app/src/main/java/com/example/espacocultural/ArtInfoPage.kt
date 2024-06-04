@@ -1,9 +1,11 @@
 package com.example.espacocultural
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
@@ -25,6 +27,7 @@ import com.google.firebase.firestore.auth.FirebaseAuthCredentialsProvider
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.Locale
 
 class ArtInfoPage : AppCompatActivity() {
 
@@ -32,6 +35,12 @@ class ArtInfoPage : AppCompatActivity() {
     private var salonId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        when (GlobalVariables.appLanguage) {
+            "pt" -> changeLanguage(Locale("pt"))
+            "en" -> changeLanguage(Locale("en"))
+            else -> changeLanguage(Locale("es"))
+        }
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.art_info_page)
@@ -155,5 +164,12 @@ class ArtInfoPage : AppCompatActivity() {
         bitmap?.let {
             imageView.setImageBitmap(it)
         }
+    }
+
+    private fun changeLanguage(locale: Locale) {
+        val resources = this.resources
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 }

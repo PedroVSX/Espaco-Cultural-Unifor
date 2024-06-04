@@ -1,11 +1,13 @@
 package com.example.espacocultural
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.text.InputFilter
 import android.util.Base64
@@ -32,7 +34,12 @@ import com.example.espacocultural.models.Salons
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.WriterException
+import com.google.zxing.common.BitMatrix
+import com.google.zxing.qrcode.QRCodeWriter
 import java.io.ByteArrayOutputStream
+import java.util.Locale
 
 class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
 
@@ -50,6 +57,12 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
     private var inOptions: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        when (GlobalVariables.appLanguage) {
+            "pt" -> changeLanguage(Locale("pt"))
+            "en" -> changeLanguage(Locale("en"))
+            else -> changeLanguage(Locale("es"))
+        }
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.arts_page)
@@ -111,12 +124,22 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
                 // Adiciona número e imagem, fazer if (se não tiver imagem ou texto, não adicionar)
                 if (addImage.drawable != null && (artName.text.toString() != "" || artYear.text.toString() != ""
                             || artAuthor.text.toString() != "" || artDescription.text.toString() != "")) {
+
+                    val qrCodeContent = "$salonId:${artName.text.toString()}"
+                    val qrCodeBitmap = generateQrCode(qrCodeContent, 200, 200)
+
+                    val byteArrayOutputStream = ByteArrayOutputStream()
+                    qrCodeBitmap?.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+                    val qrCodeBytes = byteArrayOutputStream.toByteArray()
+                    val qrCodeBase64 = Base64.encodeToString(qrCodeBytes, Base64.DEFAULT)
+
                     val art = mapOf(
                         "Ano" to artYear.text.toString(),
                         "Autor" to artAuthor.text.toString(),
                         "Descrição" to artDescription.text.toString(),
                         "Nome da obra" to artName.text.toString(),
-                        "imagem" to imageViewToBase64(addImage)
+                        "imagem" to imageViewToBase64(addImage),
+                        "qrCodeBase64" to qrCodeBase64
                     )
 
                     db.collection("saloes").document("salao $salonId")
@@ -473,5 +496,31 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
                 Log.d("Database", "No such document")
             }
         }
+    }
+
+    fun generateQrCode(content: String, width: Int, height: Int): Bitmap? {
+        val qrCodeWriter = QRCodeWriter()
+        return try {
+            val bitMatrix: BitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, width, height)
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    bitmap.setPixel(x, y, if (bitMatrix.get(x, y)) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+                }
+            }
+
+            bitmap
+        } catch (e: WriterException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun changeLanguage(locale: Locale) {
+        val resources = this.resources
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 }

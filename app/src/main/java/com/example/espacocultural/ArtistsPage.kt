@@ -1,11 +1,13 @@
 package com.example.espacocultural
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
@@ -34,6 +36,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import java.io.ByteArrayOutputStream
+import java.util.Locale
 
 class ArtistsPage : AppCompatActivity(),  ArtistsAdapter.OnItemClickListener {
 
@@ -49,6 +52,12 @@ class ArtistsPage : AppCompatActivity(),  ArtistsAdapter.OnItemClickListener {
     private var inOptions: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        when (GlobalVariables.appLanguage) {
+            "pt" -> changeLanguage(Locale("pt"))
+            "en" -> changeLanguage(Locale("en"))
+            else -> changeLanguage(Locale("es"))
+        }
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.artists_page)
@@ -421,5 +430,12 @@ class ArtistsPage : AppCompatActivity(),  ArtistsAdapter.OnItemClickListener {
                 Log.d("Database", "No such document")
             }
         }
+    }
+
+    private fun changeLanguage(locale: Locale) {
+        val resources = this.resources
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 }

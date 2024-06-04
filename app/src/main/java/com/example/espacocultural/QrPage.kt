@@ -1,15 +1,13 @@
 package com.example.espacocultural
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,23 +15,29 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.espacocultural.models.GlobalVariables
 import com.google.zxing.ResultPoint
-import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
-import com.journeyapps.barcodescanner.CaptureActivity
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
-import com.journeyapps.barcodescanner.DefaultDecoderFactory
-import com.journeyapps.barcodescanner.camera.CameraSettings
+import java.util.Locale
 
 class QrPage : AppCompatActivity() {
 
     private var isCameraActive = true
     private lateinit var barcodeView: DecoratedBarcodeView
+    private val CAMERA_PERMISSION_CODE = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        when (GlobalVariables.appLanguage) {
+            "pt" -> changeLanguage(Locale("pt"))
+            "en" -> changeLanguage(Locale("en"))
+            else -> changeLanguage(Locale("es"))
+        }
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.qr_page)
+
+        checkCameraPermission()
 
         // Inicializa a visualização da câmera
         barcodeView = DecoratedBarcodeView(this)
@@ -83,11 +87,25 @@ class QrPage : AppCompatActivity() {
     private val callback = object : BarcodeCallback {
         override fun barcodeResult(result: BarcodeResult?) {
             result?.let {
-                // Processa o resultado do escaneamento do QR code aqui
-                //val intent = Intent(this@QrPage, ArtInfoPage::class.java)
-                //intent.putExtra("qrCodeContent", it.text)
-                //startActivity(intent)
-                changeScreen(this@QrPage, ArtInfoPage::class.java)
+                val qrCodeContent = it.text
+                val parts = qrCodeContent.split(":")
+                if (parts.size == 2) {
+                    val salonIdString = parts[0]
+                    val artId = parts[1]
+
+                    try {
+                        val salonId = salonIdString.toInt()
+
+                        // Use salonId e artId conforme necessário
+                        val intent = Intent(this@QrPage, ArtInfoPage::class.java)
+                        intent.putExtra("salonId", salonId)
+                        intent.putExtra("artId", artId)
+                        startActivity(intent)
+                    } catch (e: NumberFormatException) {
+                        // Trate o erro caso salonId não seja um número válido
+                        e.printStackTrace()
+                    }
+                }
             }
         }
 
@@ -125,5 +143,49 @@ class QrPage : AppCompatActivity() {
             button.setText(R.string.camera_off)
         }
         isCameraActive = !isCameraActive
+    }
+
+    private fun changeLanguage(locale: Locale) {
+        val resources = this.resources
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+    }
+
+    private fun checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED) {
+            // Solicita permissão
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA),
+                CAMERA_PERMISSION_CODE
+            )
+        } else {
+            // A permissão já foi concedida, inicie a câmera
+            initCamera()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permissão concedida, inicie a câmera
+                initCamera()
+            } else {
+                // Permissão negada, informe ao usuário
+                Toast.makeText(this, "Permissão da câmera negada", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun initCamera() {
+        // Inicia a câmera quando a atividade é criada
+        barcodeView.resume()
     }
 }

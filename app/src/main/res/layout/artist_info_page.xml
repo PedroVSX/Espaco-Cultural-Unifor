@@ -83,6 +83,7 @@
             android:layout_height="15dp" />
 
         <TextView
+            android:id="@+id/artist_name"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:fontFamily="@font/folito_bold"
@@ -100,6 +101,6 @@
             android:fontFamily="@font/folito_regular"
             android:textSize="20sp"
             android:textColor="@color/black"
-            android:text="@string/lorem_ipsum" />
+            android:text="" />
     </LinearLayout>
 </RelativeLayout>

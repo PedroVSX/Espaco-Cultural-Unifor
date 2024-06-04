@@ -17,7 +17,7 @@ class ArtsAdapter(
     private val artsList: MutableList<Arts>,
     private val itemClickListener: ArtsAdapter.OnItemClickListener,
     private val salonId: Int
-    ) : RecyclerView.Adapter<ArtsAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<ArtsAdapter.ViewHolder>() {
 
     interface OnItemClickListener {
         fun onDeleteIconClick(position: Int)

@@ -1,8 +1,10 @@
 package com.example.espacocultural
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
@@ -15,12 +17,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.espacocultural.models.GlobalVariables
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Locale
 
 class AdmLoginPage : AppCompatActivity() {
 
     var passwordVisible: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        when (GlobalVariables.appLanguage) {
+            "pt" -> changeLanguage(Locale("pt"))
+            "en" -> changeLanguage(Locale("en"))
+            else -> changeLanguage(Locale("es"))
+        }
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.adm_login_page)
@@ -82,5 +91,12 @@ class AdmLoginPage : AppCompatActivity() {
             view.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             passwordVisible = !passwordVisible
         }
+    }
+
+    private fun changeLanguage(locale: Locale) {
+        val resources = this.resources
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 }

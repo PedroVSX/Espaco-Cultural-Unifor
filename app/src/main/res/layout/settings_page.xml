@@ -164,76 +164,64 @@
         android:orientation="vertical">
 
         <!-- Idiomas -->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:background="@color/settings_rectangle_bg"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="match_parent" />
+            android:layout_gravity="center" >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:layout_gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
                 android:fontFamily="@font/folito_medium"
-                android:gravity="center"
                 android:text="@string/languages"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-            <Space
-                android:layout_width="115dp"
-                android:layout_height="match_parent" />
-
             <Spinner
                 android:id="@+id/languagesSpinner"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="5dp" />
 
         <!-- Suporte/Contato -->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:background="@color/settings_rectangle_bg"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="match_parent" />
+            android:layout_gravity="center" >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:layout_gravity="center"
                 android:fontFamily="@font/folito_medium"
-                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
                 android:text="@string/contact_support"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
-
-            <Space
-                android:layout_width="180dp"
-                android:layout_height="match_parent" />
 
             <ImageButton
                 android:id="@+id/support_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
                 android:adjustViewBounds="true"
                 android:background="@null"
                 android:scaleType="centerInside"
                 android:src="@drawable/arrow_down" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/support_visibility"
