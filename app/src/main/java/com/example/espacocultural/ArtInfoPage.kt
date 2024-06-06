@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -29,10 +30,25 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Locale
 
-class ArtInfoPage : AppCompatActivity() {
+class ArtInfoPage : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var artId: String
     private var salonId: Int? = null
+    private lateinit var tts: TextToSpeech
+    private lateinit var playButton: ImageView
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            val result = tts.setLanguage(Locale("pt"))
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "Language is not supported")
+            } else {
+                playButton.isEnabled = true
+            }
+        } else {
+            Log.e("TTS", "Initialization failed")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         when (GlobalVariables.appLanguage) {
@@ -59,6 +75,7 @@ class ArtInfoPage : AppCompatActivity() {
         // Botões superiores
         val returnButton = findViewById<Button>(R.id.return_button)
         val optionsButton = findViewById<ConstraintLayout>(R.id.options_button)
+        playButton = findViewById(R.id.play)
 
         returnButton.setOnClickListener {
             changeScreen(this, GlobalVariables.lastPage)
@@ -120,6 +137,11 @@ class ArtInfoPage : AppCompatActivity() {
                 mainContainer.visibility = View.GONE
             }
 
+        tts = TextToSpeech(this, this)
+        playButton.setOnClickListener {
+            speakOut(artDescription.text.toString())
+        }
+
         // Tela expandida
         val expandedArt: FrameLayout = findViewById(R.id.expanded_art) // Tela da expansão
         val leaveExpansion: RelativeLayout = findViewById(R.id.leave_expansion) // Botão para sair de expansão
@@ -171,5 +193,17 @@ class ArtInfoPage : AppCompatActivity() {
         val configuration = resources.configuration
         configuration.setLocale(locale)
         resources.updateConfiguration(configuration, resources.displayMetrics)
+    }
+
+    private fun speakOut(text: String) {
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
+    }
+
+    override fun onDestroy() {
+        if (tts.isSpeaking) {
+            tts.stop()
+        }
+        tts.shutdown()
+        super.onDestroy()
     }
 }

@@ -76,7 +76,7 @@ class ArtistsPage : AppCompatActivity(),  ArtistsAdapter.OnItemClickListener {
         val optionsButton = findViewById<ConstraintLayout>(R.id.options_button)
         val addArtist: RelativeLayout = findViewById(R.id.add) // Botão para adicionar obra
 
-        // Card de criar salão
+        // Card de criar artista
         val outsideCard: FrameLayout = findViewById(R.id.artist_creation_background) // Layout do card
         val leaveButton: RelativeLayout = findViewById(R.id.leave_card) // Botão de sair do card
         val errorPrevention: FrameLayout = findViewById(R.id.error_prevention_background) // Card de prevenção de erros

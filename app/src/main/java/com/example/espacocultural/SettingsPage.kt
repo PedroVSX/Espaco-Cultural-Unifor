@@ -25,10 +25,15 @@ import java.util.Locale
 class SettingsPage : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Recupera a configuração de idioma de SharedPreferences
+        val sharedPreferences = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+        val savedLanguage = sharedPreferences.getString("AppLanguage", "pt")
+        GlobalVariables.appLanguage = savedLanguage ?: "pt"
+
         when (GlobalVariables.appLanguage) {
             "pt" -> changeLanguage(Locale("pt"))
             "en" -> changeLanguage(Locale("en"))
-            else -> changeLanguage(Locale("es"))
+            "es" -> changeLanguage(Locale("es"))
         }
 
         super.onCreate(savedInstanceState)
@@ -43,34 +48,33 @@ class SettingsPage : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
+        // Define a seleção inicial do Spinner de acordo com a linguagem atual
+        val initialSelection = when (GlobalVariables.appLanguage) {
+            "pt" -> 0
+            "en" -> 1
+            "es" -> 2
+            else -> 0
+        }
+        spinner.setSelection(initialSelection)
+
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 val selectedItem = parent.getItemAtPosition(position).toString()
+                val newLanguage = when (selectedItem) {
+                    "Português" -> "pt"
+                    "English" -> "en"
+                    "Español" -> "es"
+                    else -> ""
+                }
 
-                if (selectedItem.equals("Português")) {
-                    if (!GlobalVariables.appLanguage.equals("pt")) {
-                        GlobalVariables.appLanguage = "pt"
-                        recreate()
-                    }
-
-                } else if (selectedItem.equals("English")) {
-                    if (!GlobalVariables.appLanguage.equals("en")) {
-                        GlobalVariables.appLanguage = "en"
-                        recreate()
-                    }
-
-                } else if (selectedItem.equals("Español")) {
-                    if (!GlobalVariables.appLanguage.equals("es")) {
-                        GlobalVariables.appLanguage = "es"
-                        recreate()
-                    }
-
+                if (GlobalVariables.appLanguage != newLanguage) {
+                    GlobalVariables.appLanguage = newLanguage
+                    saveLanguagePreference(newLanguage)
+                    recreate()
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                GlobalVariables.appLanguage = "pt"
-            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
         // Suporte
@@ -145,5 +149,12 @@ class SettingsPage : AppCompatActivity() {
         val configuration = resources.configuration
         configuration.setLocale(locale)
         resources.updateConfiguration(configuration, resources.displayMetrics)
+    }
+
+    private fun saveLanguagePreference(language: String) {
+        val sharedPreferences = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("AppLanguage", language)
+        editor.apply()
     }
 }

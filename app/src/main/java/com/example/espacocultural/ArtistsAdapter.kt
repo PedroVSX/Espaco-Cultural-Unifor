@@ -75,7 +75,7 @@ class ArtistsAdapter(
                 val intent = Intent(itemView.context, ArtistInfoPage::class.java)
                 intent.putExtra("artistId", artists.name)
                 itemView.context.startActivity(intent)
-                GlobalVariables.lastPage = ArtistsPage::class.java
+                GlobalVariables.lastPage = HomePage::class.java
 
                 // Definir nenhuma animação de transição
                 (itemView.context as Activity).overridePendingTransition(0, 0)

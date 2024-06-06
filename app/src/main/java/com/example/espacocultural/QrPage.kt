@@ -37,7 +37,7 @@ class QrPage : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.qr_page)
 
-        checkCameraPermission()
+        //checkCameraPermission()
 
         // Inicializa a visualização da câmera
         barcodeView = DecoratedBarcodeView(this)
@@ -152,37 +152,37 @@ class QrPage : AppCompatActivity() {
         resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
-    private fun checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-            != PackageManager.PERMISSION_GRANTED) {
-            // Solicita permissão
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.CAMERA),
-                CAMERA_PERMISSION_CODE
-            )
-        } else {
-            // A permissão já foi concedida, inicie a câmera
-            initCamera()
-        }
-    }
+//    private fun checkCameraPermission() {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+//            != PackageManager.PERMISSION_GRANTED) {
+//            // Solicita permissão
+//            ActivityCompat.requestPermissions(
+//                this,
+//                arrayOf(Manifest.permission.CAMERA),
+//                CAMERA_PERMISSION_CODE
+//            )
+//        } else {
+//            // A permissão já foi concedida, inicie a câmera
+//            initCamera()
+//        }
+//    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permissão concedida, inicie a câmera
-                initCamera()
-            } else {
-                // Permissão negada, informe ao usuário
-                Toast.makeText(this, "Permissão da câmera negada", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//        if (requestCode == CAMERA_PERMISSION_CODE) {
+//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                // Permissão concedida, inicie a câmera
+//                initCamera()
+//            } else {
+//                // Permissão negada, informe ao usuário
+//                Toast.makeText(this, "Permissão da câmera negada", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
 
     private fun initCamera() {
         // Inicia a câmera quando a atividade é criada
