@@ -494,6 +494,8 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
                     "Ano" to artYear.text.toString(),
                     "Autor" to artAuthor.text.toString(),
                     "Descrição" to artDescription,
+                    "DescriçãoEN" to "",
+                    "DescriçãoES" to "",
                     "Nome da obra" to artName.text.toString(),
                     "imagem" to imageViewToBase64(addImage)
                 )

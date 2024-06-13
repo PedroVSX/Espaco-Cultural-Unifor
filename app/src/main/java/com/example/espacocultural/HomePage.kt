@@ -128,6 +128,8 @@ class HomePage : AppCompatActivity(),  ArtistsAdapter.OnItemClickListener {
                     val artist = mapOf(
                         "Nome" to artistName.text.toString(),
                         "Biografia" to artistBiography.text.toString(),
+                        "BiografiaEN" to "",
+                        "BiografiaES" to "",
                         "imagem" to imageViewToBase64(addImage)
                     )
 
