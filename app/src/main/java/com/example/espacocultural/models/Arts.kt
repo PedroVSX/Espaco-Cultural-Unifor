@@ -4,7 +4,7 @@ import android.graphics.drawable.Drawable
 
 data class Arts(
     var name: String = "",
-    var year: Int = 0,
+    var year: String = "",
     var author: String = "",
     var description: String = "",
     var image: Drawable? = null,

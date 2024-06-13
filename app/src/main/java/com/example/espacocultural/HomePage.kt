@@ -1,8 +1,12 @@
 package com.example.espacocultural
 
+import android.Manifest
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -25,6 +29,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -49,7 +56,16 @@ class HomePage : AppCompatActivity(),  ArtistsAdapter.OnItemClickListener {
     private var selectedImage: Boolean = false
     private var inOptions: Boolean = false
 
+    private lateinit var addArtist: RelativeLayout
+
+    val CHANNEL_ID = "channelId"
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Recupera a configuração de idioma de SharedPreferences
+        val sharedPreferences = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+        val savedLanguage = sharedPreferences.getString("AppLanguage", "pt")
+        GlobalVariables.appLanguage = savedLanguage ?: "pt"
+
         when (GlobalVariables.appLanguage) {
             "pt" -> changeLanguage(Locale("pt"))
             "en" -> changeLanguage(Locale("en"))
@@ -69,15 +85,14 @@ class HomePage : AppCompatActivity(),  ArtistsAdapter.OnItemClickListener {
         recyclerView.adapter = adapter
         loadArtistsFromFirestore()
 
-        // Botões artistas
-//        val viewAllArtists: LinearLayout = findViewById(R.id.view_all_artists)
-//
-//        viewAllArtists.setOnClickListener{
-//            changeScreen(this, ArtistsPage::class.java)
-//        }
+        val oldExpositions: RelativeLayout = findViewById(R.id.oldExpositions)
+
+        oldExpositions.setOnClickListener {
+            changeScreen(this, OldExpositionsPage::class.java)
+        }
 
         val optionsButton = findViewById<ImageView>(R.id.options_image)
-        val addArtist: RelativeLayout = findViewById(R.id.add) // Botão para adicionar obra
+        addArtist = findViewById(R.id.add) // Botão para adicionar obra
 
         // Card de criar artista
         val outsideCard: FrameLayout = findViewById(R.id.artist_creation_background) // Layout do card
@@ -119,6 +134,26 @@ class HomePage : AppCompatActivity(),  ArtistsAdapter.OnItemClickListener {
                     db.collection("artistas").document(artistName.text.toString())
                         .set(artist)
 
+                    // Notificação de criação
+                    if (GlobalVariables.notifications) {
+                        var builder = NotificationCompat.Builder(this, CHANNEL_ID)
+                        builder.setSmallIcon(R.drawable.app_icon)
+                            .setContentTitle("Artista novo!")
+                            .setContentText("Confira só o artista ${artistName.text.toString()}!")
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+                        with(NotificationManagerCompat.from(this)) {
+                            if (ActivityCompat.checkSelfPermission(
+                                    applicationContext,
+                                    Manifest.permission.POST_NOTIFICATIONS
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                return@setOnClickListener
+                            }
+                            notify(1, builder.build())
+                        }
+                    }
+
                     outsideCard.visibility = View.GONE
                     artistName.text.clear()
                     artistBiography.text.clear()
@@ -135,11 +170,13 @@ class HomePage : AppCompatActivity(),  ArtistsAdapter.OnItemClickListener {
             // Editar, remover (pegar os botões do RecyclerView)
             if (!inOptions) {
                 artistsList.forEach { it.showOptions = true }
+                addArtist.visibility = View.GONE
                 adapter.notifyDataSetChanged()
 
                 optionsChangeSizeAndImage(20, R.drawable.x_white)
             } else {
                 artistsList.forEach { it.showOptions = false }
+                addArtist.visibility = View.VISIBLE
                 adapter.notifyDataSetChanged()
 
                 optionsChangeSizeAndImage(30, R.drawable.options)
@@ -235,9 +272,16 @@ class HomePage : AppCompatActivity(),  ArtistsAdapter.OnItemClickListener {
                     for (document in snapshot.documents) {
                         val artistData = document.data
                         if (artistData != null) {
-                            val name = artistData["Nome"] as String
-                            val biography = artistData["Biografia"] as String
-                            val base64Image = artistData["imagem"] as String
+                            val name = artistData["Nome"] as? String?: continue
+                            var biography = ""
+
+                            when (GlobalVariables.appLanguage) {
+                                "pt" -> biography = artistData["Biografia"] as? String ?: ""
+                                "en" -> biography = artistData["BiografiaEN"] as? String ?: ""
+                                else -> biography = artistData["BiografiaES"] as? String ?: ""
+                            }
+
+                            val base64Image = artistData["imagem"] as? String ?: ""
 
                             val image = decodeBase64ToDrawable(base64Image)
 
@@ -322,7 +366,7 @@ class HomePage : AppCompatActivity(),  ArtistsAdapter.OnItemClickListener {
         val deleteCard: FrameLayout = findViewById(R.id.delete_error_prevention)
         deleteCard.visibility = View.VISIBLE
         val deleteText: TextView = findViewById(R.id.delete_text)
-        deleteText.text = getString(R.string.artist_delete_error_prevention) + selectedArtist.name + "?"
+        deleteText.text = getString(R.string.artist_delete_error_prevention) + " " + selectedArtist.name + "?"
 
         val cancelDeletion: Button = findViewById(R.id.cancel_delete_button)
         val confirmDeletion: Button = findViewById(R.id.confirm_delete_button)
@@ -452,6 +496,17 @@ class HomePage : AppCompatActivity(),  ArtistsAdapter.OnItemClickListener {
             } else {
                 Log.d("Database", "No such document")
             }
+        }
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(CHANNEL_ID, "First channel",
+                NotificationManager.IMPORTANCE_DEFAULT)
+            channel.description = "Test description for my channel"
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 }

@@ -144,6 +144,41 @@
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
+    <!--Button
+        android:id="@+id/oldExpositions"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="330dp"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/button_rounded"
+        android:textColor="@color/branco_unifor"
+        android:fontFamily="@font/folito_bold"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:text="@string/old_expositions" /-->
+
+    <RelativeLayout
+        android:id="@+id/oldExpositions"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="330dp"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/button_rounded"
+        android:clickable="true" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/branco_unifor"
+            android:fontFamily="@font/folito_bold"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:textSize="16sp"
+            android:text="@string/old_expositions" />
+    </RelativeLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -163,20 +198,6 @@
         android:layout_marginTop="120dp"
         android:background="@android:color/darker_gray"
         android:src="@drawable/centelhas_em_movimento" />
-
-    <Button
-        android:id="@+id/oldExpositions"
-        android:layout_width="250dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="330dp"
-        android:layout_gravity="center"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/button_rounded"
-        android:textColor="@color/branco_unifor"
-        android:fontFamily="@font/folito_bold"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:text="@string/old_expositions" />
 
     <RelativeLayout
         android:id="@+id/view_all_artists"
@@ -468,4 +489,5 @@
             </LinearLayout>
         </RelativeLayout>
     </FrameLayout>
+
 </RelativeLayout>

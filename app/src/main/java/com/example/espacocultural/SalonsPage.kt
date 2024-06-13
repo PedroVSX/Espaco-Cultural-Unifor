@@ -1,8 +1,12 @@
 package com.example.espacocultural
 
+import android.Manifest
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -24,6 +28,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -52,6 +59,8 @@ class SalonsPage : AppCompatActivity(), SalonsAdapter.OnItemClickListener {
     private var selectedImage: Boolean = false
     private var inOptions: Boolean = false
 
+    val CHANNEL_ID = "channelId"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         when (GlobalVariables.appLanguage) {
             "pt" -> changeLanguage(Locale("pt"))
@@ -62,6 +71,7 @@ class SalonsPage : AppCompatActivity(), SalonsAdapter.OnItemClickListener {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.salons_page)
+        salonsList.clear()
 
         // Inicializa o RecyclerView
         recyclerView = findViewById(R.id.recycler_view)
@@ -137,6 +147,26 @@ class SalonsPage : AppCompatActivity(), SalonsAdapter.OnItemClickListener {
 
                     docRef.collection("obras").document("ignore")
                         .set(art)
+
+                    // Notificação de criação
+                    if (GlobalVariables.notifications) {
+                        var builder = NotificationCompat.Builder(this, CHANNEL_ID)
+                        builder.setSmallIcon(R.drawable.app_icon)
+                            .setContentTitle("Salão novo!")
+                            .setContentText("Confira só o nosso salão ${salonNumber.text.toString()} e veja as obras!")
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+                        with(NotificationManagerCompat.from(this)) {
+                            if (ActivityCompat.checkSelfPermission(
+                                    applicationContext,
+                                    Manifest.permission.POST_NOTIFICATIONS
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                return@setOnClickListener
+                            }
+                            notify(1, builder.build())
+                        }
+                    }
 
                     outsideCard.visibility = View.GONE
                     salonNumber.text.clear()
@@ -234,10 +264,10 @@ class SalonsPage : AppCompatActivity(), SalonsAdapter.OnItemClickListener {
                     for (document in snapshot.documents) {
                         val salonData = document.data
                         if (salonData != null) {
-                            val idString = salonData["Numero"] as String
-                            val name = "Salão $idString"
-                            val base64Image = salonData["imagem"] as String
+                            val idString = salonData["Numero"] as? String ?: continue
+                            val base64Image = salonData["imagem"] as? String ?: ""
 
+                            val name = "Salão $idString"
                             val image = decodeBase64ToDrawable(base64Image)
                             val id = idString.toInt()
 
@@ -349,7 +379,7 @@ class SalonsPage : AppCompatActivity(), SalonsAdapter.OnItemClickListener {
         val deleteCard: FrameLayout = findViewById(R.id.delete_error_prevention)
         deleteCard.visibility = View.VISIBLE
         val deleteText: TextView = findViewById(R.id.delete_text)
-        deleteText.text = getString(R.string.salon_delete_error_prevention) + selectedSalon.id + "?"
+        deleteText.text = getString(R.string.salon_delete_error_prevention) + " " + selectedSalon.id + "?"
 
         val cancelDeletion: Button = findViewById(R.id.cancel_delete_button)
         val confirmDeletion: Button = findViewById(R.id.confirm_delete_button)
@@ -483,5 +513,16 @@ class SalonsPage : AppCompatActivity(), SalonsAdapter.OnItemClickListener {
         val configuration = resources.configuration
         configuration.setLocale(locale)
         resources.updateConfiguration(configuration, resources.displayMetrics)
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(CHANNEL_ID, "First channel",
+                NotificationManager.IMPORTANCE_DEFAULT)
+            channel.description = "Test description for my channel"
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 }

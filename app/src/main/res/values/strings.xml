@@ -25,6 +25,7 @@
     <!-- SETTINGS STRINGS -->
     <string name="settings">Configurações</string>
     <string name="languages">Idiomas</string>
+    <string name="notifications">Notificações</string>
     <string name="contact_support">Suporte/Contato</string>
     <string name="email">E-mail: example@unifor.br</string>
     <string name="phone">Telefone: (85) 98765–4321</string>
@@ -34,7 +35,9 @@
     <string name="arts_name">Nome da Obra</string>
     <string name="arts_year">Ano</string>
     <string name="arts_author">Autor</string>
-    <string name="arts_description">Descrição</string>
+    <string name="arts_description_pt">Descrição</string>
+    <string name="arts_description_en">Descrição EN</string>
+    <string name="arts_description_es">Descrição ES</string>
     <string name="create_art">Criar Obra</string>
     <string name="art_leave_error_prevention">Você tem certeza que deseja sair da criação da obra?</string>
     <string name="art_delete_error_prevention">Você tem certeza que deseja deletar a obra </string>
@@ -57,4 +60,5 @@
     <string name="password">Senha</string>
     <string name="show_password">Mostrar Senha</string>
     <string name="access">Acessar</string>
+    <string name="arts_description">Descrição</string>
 </resources>

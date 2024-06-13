@@ -39,7 +39,7 @@ class ArtInfoPage : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
-            val result = tts.setLanguage(Locale("pt"))
+            val result = tts.setLanguage(Locale(GlobalVariables.appLanguage))
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "Language is not supported")
             } else {
@@ -69,6 +69,9 @@ class ArtInfoPage : AppCompatActivity(), TextToSpeech.OnInitListener {
             Log.d("ArtInfoPage", "artId recebido: $artId")
             Log.d("ArtInfoPage", "salonId recebido: $salonId")
         } else {
+            if (intent.hasExtra("artId") && !intent.hasExtra("salonId")) {
+                artId = intent.getStringExtra("artId") ?: ""
+            }
             Log.e("ArtInfoPage", "Os extras 'artId' ou 'salonId' não foram passados na Intent")
         }
 
@@ -106,40 +109,96 @@ class ArtInfoPage : AppCompatActivity(), TextToSpeech.OnInitListener {
         val artImage = findViewById<ImageView>(R.id.art_image)
         val expandedArtImage = findViewById<ImageView>(R.id.expanded_art_image) // Inicializa antes para expansão
 
-        // Banco de dados
-        val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("saloes").document("salao $salonId").collection("obras").document(artId)
+        if (GlobalVariables.lastPage != OldExpositionsPage::class.java) {
+            // Banco de dados
+            val db = FirebaseFirestore.getInstance()
+            val docRef = db.collection("saloes").document("salao $salonId").collection("obras").document(artId)
 
-        docRef.get().addOnSuccessListener {
-            if (it != null) {
-                val name = it.data?.get("Nome da obra")?.toString()
-                val year = it.data?.get("Ano")?.toString()
-                val author = it.data?.get("Autor")?.toString()
-                val description = it.data?.get("Descrição")?.toString()
-                val image = it.data?.get("imagem").toString()
+            docRef.get().addOnSuccessListener {
+                if (it != null) {
+                    val name = it.data?.get("Nome da obra")?.toString()
+                    val year = it.data?.get("Ano")?.toString()
+                    val author = it.data?.get("Autor")?.toString()
+                    var description = ""
 
-                val imageBitmap = decodeBase64ToBitmap(image)
+                    when (GlobalVariables.appLanguage) {
+                        "pt" -> description = it.data?.get("Descrição").toString()
+                        "en" -> description = it.data?.get("DescriçãoEN").toString()
+                        else -> description = it.data?.get("DescriçãoES").toString()
+                    }
 
-                artName.text = name
-                artYear.text = " - " + year
-                artAuthor.text = author
-                artDescription.text = description
-                displayBitmapInImageView(imageBitmap, artImage) // Coloca a imagem em miniatura na obra
-                displayBitmapInImageView(imageBitmap, expandedArtImage) // Coloca a imagem expandida
+                    val image = it.data?.get("imagem").toString()
 
-                progressBar.visibility = View.GONE
-                mainContainer.visibility = View.VISIBLE
+                    val imageBitmap = decodeBase64ToBitmap(image)
+
+                    artName.text = name
+                    artYear.text = " - " + year
+                    artAuthor.text = author
+                    artDescription.text = description
+                    displayBitmapInImageView(imageBitmap, artImage) // Coloca a imagem em miniatura na obra
+                    displayBitmapInImageView(imageBitmap, expandedArtImage) // Coloca a imagem expandida
+
+                    progressBar.visibility = View.GONE
+                    mainContainer.visibility = View.VISIBLE
+                }
             }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed!", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.VISIBLE
+                    mainContainer.visibility = View.GONE
+                }
+
+        } else {
+            // Banco de dados
+            val db = FirebaseFirestore.getInstance()
+            val docRef = db.collection("antigas").document(artId)
+
+            docRef.get().addOnSuccessListener {
+                if (it != null) {
+                    val name = it.data?.get("Nome da obra")?.toString()
+                    val year = it.data?.get("Ano")?.toString()
+                    val author = it.data?.get("Autor")?.toString()
+                    var description = ""
+
+                    when (GlobalVariables.appLanguage) {
+                        "pt" -> description = it.data?.get("Descrição").toString()
+                        "en" -> description = it.data?.get("DescriçãoEN").toString()
+                        else -> description = it.data?.get("DescriçãoES").toString()
+                    }
+
+                    val image = it.data?.get("imagem").toString()
+
+                    val imageBitmap = decodeBase64ToBitmap(image)
+
+                    artName.text = name
+                    artYear.text = " - " + year
+                    artAuthor.text = author
+                    artDescription.text = description
+                    displayBitmapInImageView(imageBitmap, artImage) // Coloca a imagem em miniatura na obra
+                    displayBitmapInImageView(imageBitmap, expandedArtImage) // Coloca a imagem expandida
+
+                    progressBar.visibility = View.GONE
+                    mainContainer.visibility = View.VISIBLE
+                }
+            }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Failed!", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.VISIBLE
+                    mainContainer.visibility = View.GONE
+                }
         }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed!", Toast.LENGTH_SHORT).show()
-                progressBar.visibility = View.VISIBLE
-                mainContainer.visibility = View.GONE
-            }
 
         tts = TextToSpeech(this, this)
         playButton.setOnClickListener {
-            speakOut(artDescription.text.toString())
+            if (!tts.isSpeaking) {
+                speakOut(artDescription.text.toString())
+                val newImage = resources.getDrawable(R.drawable.pause)
+                playButton.setImageDrawable(newImage)
+            } else {
+                tts.stop()
+                val newImage = resources.getDrawable(R.drawable.play)
+                playButton.setImageDrawable(newImage)
+            }
         }
 
         // Tela expandida

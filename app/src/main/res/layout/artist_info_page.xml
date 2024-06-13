@@ -52,6 +52,7 @@
         android:clickable="true">
 
         <ImageView
+            android:id="@+id/options_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +63,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:id="@+id/configLayout"
+        android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -73,9 +74,12 @@
             android:layout_width="match_parent"
             android:layout_height="10dp" />
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/artist_image"
             android:layout_width="150dp"
             android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearance="@style/ImageCircle"
             android:background="@drawable/circle_shape" />
 
         <Space
@@ -85,22 +89,64 @@
         <TextView
             android:id="@+id/artist_name"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/folito_bold"
             android:textSize="24sp"
             android:textColor="@color/black"
             android:text="Nome do Autor" />
 
         <Space
-            android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="10dp" />
 
-        <TextView
+        <RelativeLayout
             android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:background="@color/cinza_unifor" >
+
+            <ImageView
+                android:id="@+id/play"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="15dp"
+                android:src="@drawable/play"
+                android:clickable="true" />
+
+            <RelativeLayout
+                android:layout_width="280dp"
+                android:layout_height="5dp"
+                android:background="@color/gray"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp" />
+        </RelativeLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="10dp" />
+
+        <ScrollView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/folito_regular"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:text="" />
+            android:layout_gravity="center" >
+
+            <TextView
+                android:id="@+id/artist_biography"
+                android:layout_width="350dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/folito_regular"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:text="" />
+        </ScrollView>
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="visible" />
 </RelativeLayout>

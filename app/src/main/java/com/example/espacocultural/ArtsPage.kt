@@ -1,8 +1,12 @@
 package com.example.espacocultural
 
+import android.Manifest
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -25,6 +29,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -34,6 +41,7 @@ import com.example.espacocultural.models.Salons
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.SetOptions
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.common.BitMatrix
@@ -56,6 +64,8 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
     private var selectedImage: Boolean = false
     private var inOptions: Boolean = false
 
+    val CHANNEL_ID = "channelId"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         when (GlobalVariables.appLanguage) {
             "pt" -> changeLanguage(Locale("pt"))
@@ -66,6 +76,9 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.arts_page)
+        artsList.clear()
+
+        createNotificationChannel()
 
         // Qual salão estou?
         salonId = intent.getIntExtra("salonId", -1)
@@ -125,6 +138,7 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
                 if (addImage.drawable != null && (artName.text.toString() != "" || artYear.text.toString() != ""
                             || artAuthor.text.toString() != "" || artDescription.text.toString() != "")) {
 
+                    // Gerar QrCode ao criar obra
                     val qrCodeContent = "$salonId:${artName.text.toString()}"
                     val qrCodeBitmap = generateQrCode(qrCodeContent, 200, 200)
 
@@ -146,6 +160,26 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
                         .collection("obras").document(artName.text.toString())
                         .set(art)
 
+                    // Notificação de criação
+                    if (GlobalVariables.notifications) {
+                        var builder = NotificationCompat.Builder(this, CHANNEL_ID)
+                        builder.setSmallIcon(R.drawable.app_icon)
+                            .setContentTitle("Obra nova!")
+                            .setContentText("Veja só a nossa nova obra: ${artName.text.toString()}!")
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+                        with (NotificationManagerCompat.from(this)) {
+                            if (ActivityCompat.checkSelfPermission(
+                                    applicationContext,
+                                    Manifest.permission.POST_NOTIFICATIONS
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                return@setOnClickListener
+                            }
+                            notify(1, builder.build())
+                        }
+                    }
+
                     outsideCard.visibility = View.GONE
                     artName.text.clear()
                     artYear.text.clear()
@@ -154,6 +188,7 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
                     addImage.setImageDrawable(null)
 
                     loadArtsFromFirestore()
+
                 }  else {
                     Toast.makeText(this, "A obra está sem imagem ou algum campo não foi preenchido!", Toast.LENGTH_SHORT).show()
                 }
@@ -237,16 +272,49 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
                     for (document in snapshot.documents) {
                         val artData = document.data
                         if (artData != null && artData["Nome da obra"] != "ignore") {
-                            val name = artData["Nome da obra"] as String
-                            val year = artData["Ano"] as String
-                            val author = artData["Autor"] as String
-                            val description = artData["Descrição"] as String
-                            val base64Image = artData["imagem"] as String
+                            val name = artData["Nome da obra"] as? String?: continue
+
+                            if (!fieldExists(name, "QrCode")) {
+                                val qrCodeContent = "$salonId:${name}"
+                                val qrCodeBitmap = generateQrCode(qrCodeContent, 200, 200)
+
+                                val byteArrayOutputStream = ByteArrayOutputStream()
+                                qrCodeBitmap?.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+                                val qrCodeBytes = byteArrayOutputStream.toByteArray()
+                                val qrCodeBase64 = Base64.encodeToString(qrCodeBytes, Base64.DEFAULT)
+
+                                val data = mapOf(
+                                    "QrCode" to qrCodeBase64
+                                )
+
+                                val docRef = db.collection("saloes").document("salao " + salonId.toString())
+                                    .collection("obras").document(name)
+
+                                docRef.set(data, SetOptions.merge())
+                                    .addOnSuccessListener {
+                                        // Campo adicionado com sucesso
+                                    }
+                                    .addOnFailureListener { e ->
+                                        // Tratar falhas na atualização do documento
+                                    }
+                            }
+
+                            val year = artData["Ano"] as? String ?: ""
+                            val author = artData["Autor"] as? String ?: ""
+                            var description = ""
+
+                            when (GlobalVariables.appLanguage) {
+                                "pt" -> description = artData["Descrição"] as? String ?: ""
+                                "en" -> description = artData["DescriçãoEN"] as? String ?: ""
+                                else -> description = artData["DescriçãoES"] as? String ?: ""
+                            }
+
+                            val base64Image = artData["imagem"] as? String ?: ""
 
                             val image = decodeBase64ToDrawable(base64Image)
 
                             // Crie um objeto Art com os dados recuperados
-                            val art = Arts(name, year.toInt(), author, description, image)
+                            val art = Arts(name, year, author, description, image)
                             tempList.add(art)
                         }
                     }
@@ -350,7 +418,7 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
         val deleteCard: FrameLayout = findViewById(R.id.delete_error_prevention)
         deleteCard.visibility = View.VISIBLE
         val deleteText: TextView = findViewById(R.id.delete_text)
-        deleteText.text = getString(R.string.art_delete_error_prevention) + selectedArt.name + "?"
+        deleteText.text = getString(R.string.art_delete_error_prevention) + " " + selectedArt.name + "?"
 
         val cancelDeletion: Button = findViewById(R.id.cancel_delete_button)
         val confirmDeletion: Button = findViewById(R.id.confirm_delete_button)
@@ -522,5 +590,42 @@ class ArtsPage : AppCompatActivity(), ArtsAdapter.OnItemClickListener {
         val configuration = resources.configuration
         configuration.setLocale(locale)
         resources.updateConfiguration(configuration, resources.displayMetrics)
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(CHANNEL_ID, "First channel",
+                NotificationManager.IMPORTANCE_DEFAULT)
+            channel.description = "Test description for my channel"
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun fieldExists(documentId: String, fieldName: String): Boolean {
+        val docRef = db.collection("saloes").document(salonId.toString())
+            .collection("obras").document(documentId)
+        var returnType = false
+
+        docRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    if (documentSnapshot.contains(fieldName)) {
+                        // O campo existe no documento
+                        val fieldValue = documentSnapshot.getString(fieldName)
+                        returnType = true
+                    } else {
+                        // O campo não existe no documento
+                    }
+                } else {
+                    // O documento não existe
+                }
+            }
+            .addOnFailureListener { e ->
+                // Tratar falhas na leitura do documento
+            }
+
+        return returnType
     }
 }

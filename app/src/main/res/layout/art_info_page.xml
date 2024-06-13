@@ -173,21 +173,34 @@
                     android:layout_marginStart="15dp"
                     android:src="@drawable/play"
                     android:clickable="true" />
+
+                <RelativeLayout
+                    android:layout_width="280dp"
+                    android:layout_height="5dp"
+                    android:background="@color/gray"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="15dp" />
             </RelativeLayout>
 
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="10dp" />
 
-            <TextView
-                android:id="@+id/art_description"
-                android:layout_width="350dp"
+            <ScrollView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/folito_regular"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:text="" />
+                android:layout_gravity="center">
+
+                <TextView
+                    android:id="@+id/art_description"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/folito_regular"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:text="" />
+            </ScrollView>
         </LinearLayout>
 
     </RelativeLayout>

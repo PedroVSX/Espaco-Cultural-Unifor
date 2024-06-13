@@ -27,33 +27,26 @@ class QrPage : AppCompatActivity() {
     private val CAMERA_PERMISSION_CODE = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Configurar o idioma
         when (GlobalVariables.appLanguage) {
             "pt" -> changeLanguage(Locale("pt"))
             "en" -> changeLanguage(Locale("en"))
             else -> changeLanguage(Locale("es"))
         }
 
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.qr_page)
 
-        //checkCameraPermission()
-
         // Inicializa a visualização da câmera
-        barcodeView = DecoratedBarcodeView(this)
+        barcodeView = findViewById(R.id.zxing_barcode_scanner)
         barcodeView.decodeContinuous(callback)
 
-        // Adiciona a visualização da câmera ao contêiner
-        val cameraContainer: FrameLayout = findViewById(R.id.camera_preview)
-        cameraContainer.addView(
-            barcodeView,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
+        checkCameraPermission()
 
         // Botão ativar/desativar câmera
         val toggleCamera: Button = findViewById(R.id.toggle_camera_button)
-
         toggleCamera.setOnClickListener {
             toggleCamera(toggleCamera)
         }
@@ -63,20 +56,20 @@ class QrPage : AppCompatActivity() {
         val compassButton = findViewById<Button>(R.id.compassButton)
         val settingsButton = findViewById<Button>(R.id.settingsButton)
 
-        homeButton.setOnClickListener{
+        homeButton.setOnClickListener {
             changeScreen(this, HomePage::class.java)
         }
 
-        compassButton.setOnClickListener{
+        compassButton.setOnClickListener {
             changeScreen(this, SalonsPage::class.java)
         }
 
-        settingsButton.setOnClickListener{
+        settingsButton.setOnClickListener {
             changeScreen(this, SettingsPage::class.java)
         }
     }
 
-    fun changeScreen(activity: Activity, clasS: Class<*>?) {
+    private fun changeScreen(activity: Activity, clasS: Class<*>?) {
         GlobalVariables.lastPage = activity::class.java
         val intent = Intent(activity, clasS)
         startActivity(intent)
@@ -126,7 +119,7 @@ class QrPage : AppCompatActivity() {
         barcodeView.pause()
     }
 
-    fun toggleCamera(button: Button) {
+    private fun toggleCamera(button: Button) {
         if (isCameraActive) {
             barcodeView.pause()
             val cameraContainer: FrameLayout = findViewById(R.id.camera_preview)
@@ -152,37 +145,37 @@ class QrPage : AppCompatActivity() {
         resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
-//    private fun checkCameraPermission() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-//            != PackageManager.PERMISSION_GRANTED) {
-//            // Solicita permissão
-//            ActivityCompat.requestPermissions(
-//                this,
-//                arrayOf(Manifest.permission.CAMERA),
-//                CAMERA_PERMISSION_CODE
-//            )
-//        } else {
-//            // A permissão já foi concedida, inicie a câmera
-//            initCamera()
-//        }
-//    }
+    private fun checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED) {
+            // Solicita permissão
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CAMERA),
+                CAMERA_PERMISSION_CODE
+            )
+        } else {
+            // A permissão já foi concedida, inicie a câmera
+            initCamera()
+        }
+    }
 
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (requestCode == CAMERA_PERMISSION_CODE) {
-//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                // Permissão concedida, inicie a câmera
-//                initCamera()
-//            } else {
-//                // Permissão negada, informe ao usuário
-//                Toast.makeText(this, "Permissão da câmera negada", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permissão concedida, inicie a câmera
+                initCamera()
+            } else {
+                // Permissão negada, informe ao usuário
+                Toast.makeText(this, "Permissão da câmera negada", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     private fun initCamera() {
         // Inicia a câmera quando a atividade é criada

@@ -3,6 +3,7 @@ package com.example.espacocultural
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -14,9 +15,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import com.example.espacocultural.models.GlobalVariables
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
@@ -77,9 +80,25 @@ class SettingsPage : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
+        // Notificações
+        val notifications: SwitchCompat = findViewById(R.id.notifications)
+
+        // Recuperar o estado salvo e definir o estado do switch
+        val isNotificationsEnabled = sharedPreferences.getBoolean("NotificationsEnabled", false)
+        notifications.isChecked = isNotificationsEnabled
+
+        // Listener para alterar o estado do switch e salvá-lo
+        notifications.setOnCheckedChangeListener { _, isChecked ->
+            GlobalVariables.notifications = isChecked
+            val editor = sharedPreferences.edit()
+            editor.putBoolean("NotificationsEnabled", isChecked)
+            editor.apply()
+        }
+
         // Suporte
         val supportVisibility = findViewById<LinearLayout>(R.id.support_visibility)
-        val supportButton = findViewById<ImageButton>(R.id.support_button)
+        val supportButton = findViewById<RelativeLayout>(R.id.support_button)
+        val supportArrow = findViewById<ImageView>(R.id.arrow)
         var on: Boolean = true
 
         // Admin
@@ -111,16 +130,25 @@ class SettingsPage : AppCompatActivity() {
 
         supportButton.setOnClickListener{
             if (on) {
-                val novaImagem = resources.getDrawable(R.drawable.arrow_down)
-                supportVisibility.visibility = View.INVISIBLE
-                supportButton.setImageDrawable(novaImagem)
+                val newImage = resources.getDrawable(R.drawable.arrow_down)
+                supportVisibility.visibility = View.GONE
+                supportArrow.setImageDrawable(newImage)
                 on = !on
             } else {
-                val novaImagem = resources.getDrawable(R.drawable.arrow_up)
+                val newImage = resources.getDrawable(R.drawable.arrow_up)
                 supportVisibility.visibility = View.VISIBLE
-                supportButton.setImageDrawable(novaImagem)
+                supportArrow.setImageDrawable(newImage)
                 on = !on
             }
+        }
+
+        val phone: TextView = findViewById(R.id.phone)
+        val phoneNumber = "(85) 98765-4321"
+        phone.setOnClickListener {
+            // Criar uma Intent para abrir o discador com o número de telefone
+            val intent = Intent(Intent.ACTION_DIAL)
+            intent.data = Uri.parse("tel:$phoneNumber")
+            startActivity(intent)
         }
 
         homeButton.setOnClickListener {
